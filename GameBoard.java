@@ -1,9 +1,5 @@
 import java.io.*;
 
-
-
-
-
 /**
  * GameBoard class that is the backbone of the puzzle program. This is meant to be used for 
  * grid puzzles, and acts as a generic board. The gameBoard is kept track of in a two-dimensional
@@ -145,10 +141,10 @@ public class GameBoard {
           dos.writeByte(data.byteValue());
         } 
       }
-      
-      
-      
     }
-    
   }
+  
+  
+  
+  
 }
