@@ -100,6 +100,10 @@ public class GameBoard {
   
   public void saveData() {
     File file = new File(this.puzName);
+
+    System.out.println(file.getAbsolutePath());
+    file.setReadOnly();
+  //  System.exit(0);
     try{
     FileOutputStream fos = new FileOutputStream(file);
     DataOutputStream dos = new DataOutputStream(fos);
@@ -113,6 +117,7 @@ public class GameBoard {
     fos.close(); 
     } catch (IOException e) {
      System.out.println("ABORT ABORT");
+     e.printStackTrace();
      return;
     }
     
@@ -145,6 +150,11 @@ public class GameBoard {
   }
   
   
+  public int[][] getBoard () {
+   return board; 
+  }
   
-  
+  public void setBoard (int[][] board) {
+   this.board = board; 
+  }
 }
