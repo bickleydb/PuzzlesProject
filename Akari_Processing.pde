@@ -23,7 +23,7 @@ final int OVERFLOW = 6;
 
 
 //Board Specific Variables
-GameBoard puzzle;
+Akari_Board puzzle;
 int row = 10;
 int col = 10;
 int tryNum = -1;
@@ -34,42 +34,46 @@ boolean[][] lit = new boolean[row][col];
 void setup() {
   //Makes the window the right size
   size((int)(2*OFFSET+row*PIX_TO_CM),(int)(2*OFFSET+col*PIX_TO_CM));
+   puzzle = new Akari_Board(row,col);
   drawBoard();
-  puzzle = new GameBoard(row,col);
+ 
 }
 
 void drawBoard() {
+  board = puzzle.getBoard();
+  lit = puzzle.getLit();
   for (int rowIndex = 0; rowIndex  < row; rowIndex++) {
     for (int colIndex = 0; colIndex < col; colIndex++) {
       switch (board[colIndex][rowIndex]) {
-        case EMPTY:
+        
+        case EMPTY: //If the grid square does not contain anything
           if (lit[colIndex][rowIndex])
-            fill(0,100,0);
+            fill(0,100,0); //If its filled be different color
           else
-            fill(255,255,255);
+            fill(255,255,255); //If not filled, be white
           rect((int)(OFFSET+rowIndex*PIX_TO_CM),(int)(OFFSET+colIndex*PIX_TO_CM),(int)PIX_TO_CM,(int)PIX_TO_CM);
           break;
-        case ONE_LIGHT:
+        case ONE_LIGHT: //If the grid square will have an adjacent light
+          fill(0,0,0); //Make it black
+          rect((int)(OFFSET+rowIndex*PIX_TO_CM),(int)(OFFSET+colIndex*PIX_TO_CM),(int)PIX_TO_CM,(int)PIX_TO_CM);
+          break;
+        case TWO_LIGHT: //If the grid square will have two adjacent lights
           fill(0,0,0);
           rect((int)(OFFSET+rowIndex*PIX_TO_CM),(int)(OFFSET+colIndex*PIX_TO_CM),(int)PIX_TO_CM,(int)PIX_TO_CM);
           break;
-        case TWO_LIGHT:
+         case THREE_LIGHT: //Three adjacent lights
           fill(0,0,0);
           rect((int)(OFFSET+rowIndex*PIX_TO_CM),(int)(OFFSET+colIndex*PIX_TO_CM),(int)PIX_TO_CM,(int)PIX_TO_CM);
           break;
-         case THREE_LIGHT:
+         case FOUR_LIGHT: //Four adjacent lights
           fill(0,0,0);
           rect((int)(OFFSET+rowIndex*PIX_TO_CM),(int)(OFFSET+colIndex*PIX_TO_CM),(int)PIX_TO_CM,(int)PIX_TO_CM);
           break;
-         case FOUR_LIGHT:
+          case BLOCK: //Block that prevents lights
           fill(0,0,0);
           rect((int)(OFFSET+rowIndex*PIX_TO_CM),(int)(OFFSET+colIndex*PIX_TO_CM),(int)PIX_TO_CM,(int)PIX_TO_CM);
           break;
-          case BLOCK:
-          fill(0,0,0);
-          rect((int)(OFFSET+rowIndex*PIX_TO_CM),(int)(OFFSET+colIndex*PIX_TO_CM),(int)PIX_TO_CM,(int)PIX_TO_CM);
-          break;
-          case LIGHT:
+          case LIGHT: //If it is a light
           fill(28,239,199);
           ellipse((int)(OFFSET+rowIndex*PIX_TO_CM+PIX_TO_CM/2),(int)(OFFSET+colIndex*PIX_TO_CM+PIX_TO_CM/2),(int)PIX_TO_CM,(int)PIX_TO_CM);
           
@@ -80,78 +84,33 @@ void drawBoard() {
 }
 
 void draw() { 
+  //ZEY METHOD.... IT DOES NOTHZING
 }
 
 
 void mousePressed() {
   if (mouseX < OFFSET || mouseY < OFFSET || mouseX > width-OFFSET || mouseY > height-OFFSET)
-    return;
-  int rowClick = findRow();
-  int colClick = findCol();
+    return; //Don't bother doing anything if it is outside the playing area
+  int rowClick = findRow(); //Gets row num
+  int colClick = findCol(); //Gets col num
   if (mouseButton == RIGHT) {
     board[rowClick][colClick]++;
-    if (board[rowClick][colClick] == OVERFLOW)
+    puzzle.addConst(rowClick,colClick,board[rowClick][colClick]);
+    if (board[rowClick][colClick] == OVERFLOW) {
     board[rowClick][colClick] = 0;
+     puzzle.addConst(rowClick,colClick,0);
+    }
   } else {
     if(board[rowClick][colClick] ==0) {
-       board[rowClick][colClick] = LIGHT;
-       updateLighting();
+      puzzle.addLight(rowClick,colClick);
     }
      else
        board[rowClick][colClick] = EMPTY;
   }
-  drawBoard();
-
-}
-
-ArrayList<Integer> getLights() {
-  ArrayList<Integer> light = new ArrayList<Integer>();
- for (int rowIndex = 0; rowIndex < row; rowIndex++) {
-   for (int colIndex = 0; colIndex < col; colIndex++) {
-     if (board[rowIndex][colIndex] == LIGHT) {
-       light.add(rowIndex);
-       light.add(colIndex);
-     }
-   }
- } 
-}
-
-void updateLighting() {
-  ArrayList<Integer> light = getLights();
- 
- for (int lightIndex = 0; lightIndex < light.size()-1; lightIndex+=2) {
-   checkUpLight();
-   checkDownLight();
-   checkLeftLight();
-   checkRightLight();
-   
- }
-}
-
-void checkUpLight() {
-  
-  
-  
+  drawBoard(); //Updates the board
 }
 
 
-void checkDownLight() {
-  
-  
-}
-
-
-void checkLeftLight() {
-  
-  
-}
-
-
-void checkRightLight() {
-  
-  
-  
-}
 
 int findRow() {
   int yRow = (int)((mouseY-OFFSET)/PIX_TO_CM);
