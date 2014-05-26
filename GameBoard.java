@@ -42,7 +42,8 @@ public class GameBoard {
   }
   
   
-  private void loadBoard(String fileName) {
+  public void loadBoard(String fileName) {
+    fileName = "C:/Users/DanielBickley/Documents/Akari_Processing/"+fileName;
     File puzz = new File (fileName);
     FileInputStream fis = null;
     DataInputStream dis = null;
@@ -95,7 +96,7 @@ public class GameBoard {
   }
   
   public void setName (String fileName) {
-    this.puzName = fileName;
+    this.puzName = "C:/Users/DanielBickley/Documents/Akari_Processing/" + fileName;
   }
   
   public void saveData() {
