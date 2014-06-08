@@ -119,6 +119,7 @@ void loadPuzzle() {
   System.out.println("asdf");
   this.puzzle.loadBoard("Puzzle10.aki");
   this.board = puzzle.getBoard();
+  this.puzzle.addLitAreas();
   drawBoard();
   
 }
@@ -136,6 +137,7 @@ void mousePressed() {
     
    if (mouseX > 5*width/12 && mouseX < 5*width/12+width/6 && mouseY > 10 && mouseY < 25) {
       loadPuzzle();
+      drawBoard();
     }
     
     if (mouseX > 8*width/12 && mouseX < 8*width/12+width/6 && mouseY > 10 && mouseY < 25) {

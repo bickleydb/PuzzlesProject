@@ -67,16 +67,21 @@ public class GameBoard {
       this.colSize = col.intValue();
       Byte dat = dis.readByte();
       int numData = dat.intValue();
+      System.out.println(numData);
       board = new int[rowSize][colSize];
       for (int counter = 0; counter < numData; counter++) {
+        System.out.println("COUNTER: " + counter);
         Byte datRow = dis.readByte();
         Byte datCol = dis.readByte();
         int dataRow = datRow.intValue();
         int dataCol = datCol.intValue();
-        int data = dis.readInt();
+        Byte date= dis.readByte();
+        int data = date.intValue();
+        System.out.println("["+dataRow+"],["+dataCol+"]="+data);
         board[dataRow][dataCol] = data;
       }
     } catch (IOException e) {
+      e.printStackTrace();
       System.out.println("Error occured while reading in the Puzzle"); 
       try {
         dis.close();
