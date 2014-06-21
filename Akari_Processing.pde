@@ -25,7 +25,7 @@ final int EMPTY = 0;
 final int OVERFLOW = 6;
 
 
-static boolean debug = true;
+static boolean debug = false;
 
 //Board Specific Variables
 Akari_Board puzzle;
@@ -72,7 +72,7 @@ void setup() {
     this.lit = new boolean[row][col];
     
     puzzle.setLit(lit);
-    this.puzzle.addLitAreas();
+    this.puzzle.addLitAreas(this.puzzle.getAllTheLights());
   } else {
     if(debug)
     System.out.println("New Puzzle");
@@ -148,7 +148,7 @@ void drawBoard() {
         rect((int)(OFFSET+rowIndex*PIX_TO_CM), (int)(OFFSET+colIndex*PIX_TO_CM), (int)PIX_TO_CM, (int)PIX_TO_CM);
         break;
       case LIGHT: //If it is a light
-        System.out.println("FOUND LIGHT");
+       // System.out.println("FOUND LIGHT");
         fill(0, 100, 0); //If its filled be different color
         rect((int)(OFFSET+rowIndex*PIX_TO_CM), (int)(OFFSET+colIndex*PIX_TO_CM), (int)PIX_TO_CM, (int)PIX_TO_CM);
         fill(28, 239, 199);
@@ -198,7 +198,8 @@ void mousePressed() {
     }
     
     if (mouseX > 8*width/12 && mouseX < 8*width/12+width/6 && mouseY > 10 && mouseY < 25) {
-      clearPuzzle();
+      puzzle.solve();
+      drawBoard();
     }
     return;
   }
@@ -215,7 +216,7 @@ void mousePressed() {
   else {
     if (board[rowClick][colClick] == EMPTY && lit[rowClick][colClick] == false) {
       puzzle.addLight(rowClick, colClick);
-      puzzle.addLitAreas();
+      puzzle.addLitAreas(this.puzzle.getAllTheLights());
     }
     else if (board[rowClick][colClick] == LIGHT) {
       puzzle.removeLight(rowClick,colClick);
