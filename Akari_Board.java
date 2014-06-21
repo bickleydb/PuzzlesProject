@@ -55,8 +55,7 @@ public class Akari_Board extends GameBoard {
     //this.lit = new boolean[this.rowSize][this.colSize];
     //clearLightsAndLit();
     addLitAreas();
-    
-  }
+    }
 
   public void remove(int row, int col) {
     this.board[row][col] = EMPTY;
@@ -97,10 +96,9 @@ public class Akari_Board extends GameBoard {
     System.out.println("LIGHT " + light.size());
     return light;
   }
-  public void addLitAreas() {
-    System.out.println("ENTERING LIT AREAS");
+
+  private void addLitAreas() {
     ArrayList<Integer> light = getAllTheLights();
-    clearLightsAndLit();
     for (int litIndex = 0; litIndex < light.size()-1; litIndex+=2) {
       checkLitUp(light.get(litIndex),light.get(litIndex+1));
       checkLitDown(light.get(litIndex),light.get(litIndex+1));
@@ -157,6 +155,3 @@ public class Akari_Board extends GameBoard {
   }
 }
   
-  
-  
-
