@@ -35,7 +35,7 @@ public class Akari_Board extends GameBoard {
     super(toCopy);
     lit = new boolean[this.rowSize][this.colSize];
     for (int i = 0; i < toCopy.board.length; i++) {
-      for (int t = 0; t < toCopy.board[0].length; t++) {
+      for (int t = 0; t < toCopy.board[i].length; t++) {
         this.lit[i][t] = toCopy.lit[i][t];
       }
     }
@@ -192,10 +192,238 @@ public class Akari_Board extends GameBoard {
     checkLeft();
     checkRight();
     checkBottom();
-    //checkCorners();
+    checkCorners();
+    checkBody();
+  }
+
+  private void fourBody(int i, int t) {
+    addLight(i-1, t);
+    addLight(i+1, t);
+    addLight(i, t-1);
+    addLight(i, t+1);
+  }
+
+  private void threeBody(int i, int t) {
+    if (board[i-1][t] == LIGHT) {
+      board[i-1][t] = IGNORE_LIGHT;
+      board[i][t]--;
+      twoBody(i, t);
+      board[i][t]++;
+      board[i-1][t] = LIGHT;
+    }
+
+    if (board[i+1][t] == LIGHT) {
+      board[i+1][t] = IGNORE_LIGHT;
+      board[i][t]--;
+      twoBody(i, t);
+      board[i][t]++;
+      board[i+1][t] = LIGHT;
+    }
+
+    if (board[i][t-1] == LIGHT) {
+      board[i][t-1] = IGNORE_LIGHT;
+      board[i][t]--;
+      twoBody(i, t);
+      board[i][t]++;
+      board[i][t-1] = LIGHT;
+    }
+
+    if (board[i][t+1] == LIGHT) {
+      board[i][t+1] = IGNORE_LIGHT;
+      board[i][t]--;
+      twoBody(i, t);
+      board[i][t]++;
+      board[i][t+1] = LIGHT;
+    }
+
+    if (lit[i-1][t] && !lit[i+1][t] && !lit[i][t-1] && !lit[i][t+1]) {
+      addLight(i+1, t);
+      addLight(i, t-1);
+      addLight(i, t+1);
+    }
+    if (!lit[i-1][t] && lit[i+1][t] && !lit[i][t-1] && !lit[i][t+1]) {
+      addLight(i-1, t);
+      addLight(i, t-1);
+      addLight(i, t+1);
+    }
+    if (!lit[i-1][t] && !lit[i+1][t] && lit[i][t-1] && !lit[i][t+1]) {
+      addLight(i+1, t);
+      addLight(i-1, t);
+      addLight(i, t+1);
+    }
+    if (!lit[i-1][t] && !lit[i+1][t] && !lit[i][t-1] && lit[i][t+1]) {
+      addLight(i+1, t);
+      addLight(i, t-1);
+      addLight(i-1, t);
+    }
+  }
+
+  private void twoBody( int i, int t) {
+     if (board[i-1][t] == LIGHT) {
+      board[i-1][t] = IGNORE_LIGHT;
+      board[i][t]--;
+      oneBody(i, t);
+      board[i][t]++;
+      board[i-1][t] = LIGHT;
+    }
+
+    if (board[i+1][t] == LIGHT) {
+      board[i+1][t] = IGNORE_LIGHT;
+      board[i][t]--;
+      oneBody(i, t);
+      board[i][t]++;
+      board[i+1][t] = LIGHT;
+    }
+
+    if (board[i][t-1] == LIGHT) {
+      board[i][t-1] = IGNORE_LIGHT;
+      board[i][t]--;
+      oneBody(i, t);
+      board[i][t]++;
+      board[i][t-1] = LIGHT;
+    }
+
+    if (board[i][t+1] == LIGHT) {
+      board[i][t+1] = IGNORE_LIGHT;
+      board[i][t]--;
+      oneBody(i, t);
+      board[i][t]++;
+      board[i][t+1] = LIGHT;
+    }
+    
+    if (!lit[i-1][t] && !lit[i+1][t] && lit[i][t-1] && lit[i][t+1]) {
+      addLight(i-1, t);
+      addLight(i+1, t);
+    }
+    if (!lit[i-1][t] && lit[i+1][t] && !lit[i][t-1] && lit[i][t+1]) {
+      addLight(i-1, t);
+      addLight(i, t-1);
+    }
+    if (!lit[i-1][t] && lit[i+1][t] && lit[i][t-1] && !lit[i][t+1]) {
+      addLight(i-1, t);
+      addLight(i, t+1);
+    }
+    if (lit[i-1][t] && !lit[i+1][t] && !lit[i][t-1] && lit[i][t+1]) {
+      addLight(i+1, t);
+      addLight(i, t-1);
+    }
+    if (lit[i-1][t] && !lit[i+1][t] && lit[i][t-1] && !lit[i][t+1]) {
+      addLight(i+1, t);
+      addLight(i, t+1);
+    }
+    if (lit[i-1][t] && lit[i+1][t] && !lit[i][t-1] && !lit[i][t+1]) {
+      addLight(i, t-1);
+      addLight(i, t+1);
+    }
+  }
+  
+  private void oneBody(int i, int t) {
+    if (board[i-1][t] == LIGHT) {
+      return;
+    }
+
+    if (board[i+1][t] == LIGHT) {
+      return;
+    }
+
+    if (board[i][t-1] == LIGHT) {
+      return;
+    }
+
+    if (board[i][t+1] == LIGHT) {
+      return;
+    }
+    
+    if (!lit[i-1][t] && lit[i+1][t] && lit[i][t-1] && lit[i][t+1]) {
+      addLight(i-1, t);
+    }
+    if (lit[i-1][t] && !lit[i+1][t] && lit[i][t-1] && lit[i][t+1]) {
+      addLight(i+1, t);
+    }
+    if (lit[i-1][t] && lit[i+1][t] && !lit[i][t-1] && lit[i][t+1]) {
+      addLight(i,t-1);
+    }
+    if (lit[i-1][t] && lit[i+1][t] && lit[i][t-1] && !lit[i][t+1]) {
+      addLight(i, t+1);
+    }
+  }
+
+  private void checkBody() {
+    for (int i = 1; i < board.length; i++) {
+      for (int t = 1; t < board[i].length; t++) {
+        if (board[i][t] == FOUR_LIGHT) {
+          fourBody(i, t);
+        }
+
+        if (board[i][t] == THREE_LIGHT) {
+          threeBody(i, t);
+        }
+
+        if (board[i][t] == TWO_LIGHT) {
+          twoBody(i, t);
+        }
+        
+        if (board[i][t] == ONE_LIGHT) {
+          oneBody(i,t);
+        }
+      }
+    }
+    addLitAreas(getAllTheLights());
+  }
+  private void checkCorners() {
+    if (board[0][0] == ONE_LIGHT) {
+      if (lit[0][1] && !lit[1][0])
+        addLight(1, 0);
+      if (!lit[0][1] && lit[1][0])
+        addLight(0, 1);
+    }
+
+    if (board[0][0] == TWO_LIGHT) {
+      addLight(1, 0);
+      addLight(0, 1);
+    }
+
+    if (board[0][board[0].length-1] == ONE_LIGHT) {
+      if (lit[0][board[0].length-2] && !lit[1][board[0].length-1])
+        addLight(1, board[0].length-1);
+      if (!lit[0][board[0].length-2] && lit[1][board[0].length-1])
+        addLight(0, board[0].length-2);
+    }
+
+    if (board[0][board[0].length-1] == TWO_LIGHT) {
+      addLight(1, board[0].length-1);
+      addLight(0, board[0].length-2);
+    }
+
+    if (board[board.length-1][0] == ONE_LIGHT) {
+      if (lit[board.length-2][0] && !lit[board.length-1][1])
+        addLight(board.length-1, 1);
+      if (!lit[board.length-2][0] && lit[board.length-1][1])
+        addLight(board.length-2, 0);
+    }
+
+    if (board[board.length-1][0] == TWO_LIGHT) {
+      addLight(board.length-1, 1);
+      addLight(board.length-2, 0);
+    }
+
+    if (board[board.length-1][board[board.length-1].length-1] == ONE_LIGHT) {
+      if (lit[board.length-2][board[board.length-2].length-1] && !lit[board.length-1][board[board.length-1].length-2])
+        addLight(board.length-1, board[board.length-1].length-2);
+      if (!lit[board.length-2][board[board.length-2].length-1] && lit[board.length-1][board[board.length-1].length-2])
+        addLight(board.length-2, board[board.length-2].length-1);
+    }
+
+    if  (board[board.length-1][board[board.length-1].length-1] == TWO_LIGHT) {
+      addLight(board.length-1, board[board.length-1].length-2);
+      addLight(board.length-2, board[board.length-2].length-1);
+    }
+
+
+    addLitAreas(getAllTheLights());
   }
   private void leftOne(int i) {
-    System.out.println("FOUND ONE at " + i + "," + 0);
+    System.out.println("FOUND ONE at " + i + "," + 0); 
     if (board[0][i-1]==LIGHT || board[1][i]==LIGHT || board[0][i+1]==LIGHT) {
       System.out.println("LEFT: " + board[0][i-1]);
       System.out.println("BELOW: " + board[1][i]);
@@ -257,7 +485,7 @@ public class Akari_Board extends GameBoard {
   }
 
   private void checkLeft() throws InvalidPuzzleException {
-    for (int i = 1; i < board.length-1; i++) {
+    for (int i = 1; i < board[0].length-1; i++) {
       if (board[0][i] == FOUR_LIGHT)
         leftFour(i);
       if (board[0][i] == THREE_LIGHT) {
@@ -298,22 +526,21 @@ public class Akari_Board extends GameBoard {
   }
 
   private void rightOne(int i) {
-    //  System.out.println("FOUND ONE at " + i + "," + board.length-1);
     if (board[board.length-1][i-1]==LIGHT || board[board.length-2][i]==LIGHT || board[board.length-1][i+1]==LIGHT) {
       System.out.println("right: " + board[board.length-1][i-1]);
       System.out.println("BELOW: " + board[1][i]);
       System.out.println("RIGHT: " + board[board.length-1][i+1]);
       System.out.println("One is satisfied");
     }
-    if (!lit[board.length-1][i-1] && lit[1][i] && lit[board.length-1][i+1]) {
+    if (!lit[board.length-1][i-1] && lit[board.length-2][i] && lit[board.length-1][i+1]) {
       addLight(board.length-1, i-1);
       addLitAreas(getAllTheLights());
     }
-    if (lit[board.length-1][i-1] && !lit[1][i] && lit[board.length-1][i+1]) {
+    if (lit[board.length-1][i-1] && !lit[board.length-2][i] && lit[board.length-1][i+1]) {
       addLight(board.length-2, i);
       addLitAreas(getAllTheLights());
     }
-    if (lit[board.length-1][i-1] && lit[1][i] && !lit[board.length-1][i+1]) {
+    if (lit[board.length-1][i-1] && lit[board.length-2][i] && !lit[board.length-1][i+1]) {
       addLight(board.length-1, i+1);
       addLitAreas(getAllTheLights());
     }
@@ -347,7 +574,7 @@ public class Akari_Board extends GameBoard {
       System.out.println("right: " + board[board.length-1][i-1]);
       System.out.println("BELOW: " + board[1][i]);
       System.out.println("RIGHT: " + board[board.length-1][i+1]);
-      throw new InvalidPuzzleException("Puzzle configuration is invalid. Constrant located at Row: " + i + " and Column " + (board.length-1) + " cannot be satisfied."+ "PENIS");
+      //throw new InvalidPuzzleException("Puzzle configuration is invalid. Constrant located at Row: " + i + " and Column " + (board.length-1) + " cannot be satisfied."+ "PENIS");
     }
     addLight(board.length-1, i-1);
     addLight(board.length-2, i);
@@ -360,7 +587,7 @@ public class Akari_Board extends GameBoard {
   }
 
   private void checkRight() throws InvalidPuzzleException {
-    for (int i = 1; i < board.length-1; i++) {
+    for (int i = 1; i < board[0].length-1; i++) {
       if (board[board.length-1][i] == FOUR_LIGHT)
         rightFour(i);
       if (board[board.length-1][i] == THREE_LIGHT) {
@@ -431,8 +658,7 @@ public class Akari_Board extends GameBoard {
       }
     }
   }
-    private void bottomOne(int i) {
-   // System.out.println("FOUND ONE at " + i + "," + board.length-1);
+  private void bottomOne(int i) {
     if (board[i-1][board.length-1]==LIGHT || board[i][board.length-2]==LIGHT || board[i+1][board.length-1]==LIGHT) {
       System.out.println("LEFT: " + board[i-1][board.length-1]);
       System.out.println("BELOW: " + board[i][board.length-2]);
@@ -459,17 +685,17 @@ public class Akari_Board extends GameBoard {
       board[i][board.length-1]--;
       if (board[i-1][board.length-1] == LIGHT) {
         board[i-1][board.length-1] = IGNORE_LIGHT;
-        leftOne(i);
+        bottomOne(i);
         board[i-1][board.length-1] = LIGHT;
       }
       if (board[i][board.length-2] == LIGHT) {
         board[i][board.length-2] = IGNORE_LIGHT;
-        leftOne(i);
+        bottomOne(i);
         board[i][board.length-2] = LIGHT;
       }
       if (board[i+1][board.length-1] == LIGHT) {
         board[i+1][board.length-1] = IGNORE_LIGHT;
-        leftOne(i);
+        bottomOne(i);
         board[i+1][board.length-1] = LIGHT;
       }
       board[i][board.length-1] = TWO_LIGHT;
@@ -477,7 +703,7 @@ public class Akari_Board extends GameBoard {
   }
 
   private void bottomThree(int i) throws InvalidPuzzleException {
-    if ((board[i-1][board.length-1] < LIGHT && lit[i-1][board.length-1] == true) || (board[i][board.length-2] < LIGHT && lit[i][board.length-2]==true) || (board[i+1][board.length-1] < LIGHT && lit[i+1][board.length-1] == true)) {
+    if ((board[i-1][board[i].length-1] < LIGHT && lit[i-1][board[i].length-1] == true) || (board[i][board[i].length-2] < LIGHT && lit[i][board[i].length-2]==true) || (board[i+1][board[i].length-1] < LIGHT && lit[i+1][board[i].length-1] == true)) {
       System.out.println("LEFT: " + board[i-1][board.length-1]);
       System.out.println("BELOW: " + board[i][board.length-2]);
       System.out.println("RIGHT: " + board[i+1][board.length-1]);
@@ -495,15 +721,15 @@ public class Akari_Board extends GameBoard {
 
   private void checkBottom() throws InvalidPuzzleException {
     for (int i = 1; i < board.length-1; i++) {
-      if (board[i][board.length-1] == FOUR_LIGHT)
+      if (board[i][board[i].length-1] == FOUR_LIGHT)
         bottomFour(i);
-      if (board[i][board.length-1] == THREE_LIGHT) {
+      if (board[i][board[i].length-1] == THREE_LIGHT) {
         bottomThree(i);
       }
-      if (board[i][board.length-1] == TWO_LIGHT) {
+      if (board[i][board[i].length-1] == TWO_LIGHT) {
         bottomTwo(i);
       }
-      if (board[i][board.length-1] == ONE_LIGHT) {
+      if (board[i][board[i].length-1] == ONE_LIGHT) {
         leftOne(i);
       }
     }
@@ -512,7 +738,7 @@ public class Akari_Board extends GameBoard {
 
 
 
-  
+
 
   public String toString() {
     String returnStr = "";

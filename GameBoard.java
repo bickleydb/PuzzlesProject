@@ -39,10 +39,10 @@ public class GameBoard {
   
   public GameBoard (GameBoard toCopy) {
     this.rowSize = toCopy.rowSize;
-    this.colSize = toCopy.rowSize;
+    this.colSize = toCopy.colSize;
     this.board = new int[rowSize][colSize];
     for (int i = 0; i < this.board.length; i++) {
-      for (int t = 0; t < board[0].length; t++) {
+      for (int t = 0; t < board[i].length; t++) {
        this.board[i][t] = toCopy.board[i][t]; 
       }
     }
