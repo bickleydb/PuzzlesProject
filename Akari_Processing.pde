@@ -20,9 +20,10 @@ final int ONE_LIGHT = 1;
 final int TWO_LIGHT = 2;
 final int THREE_LIGHT = 3;
 final int FOUR_LIGHT = 4;
-final int BLOCK = 5;
+final int BLOCK = 6;
 final int EMPTY = 0;
-final int OVERFLOW = 6;
+final int OVERFLOW = 7;
+final int ZERO_LIGHT = 5;
 
 
 static boolean debug = false;
@@ -146,6 +147,13 @@ void drawBoard() {
       case BLOCK: //Block that prevents lights
         fill(0, 0, 0);
         rect((int)(OFFSET+rowIndex*PIX_TO_CM), (int)(OFFSET+colIndex*PIX_TO_CM), (int)PIX_TO_CM, (int)PIX_TO_CM);
+        break;
+      case ZERO_LIGHT:
+      fill(0, 0, 0);
+        rect((int)(OFFSET+rowIndex*PIX_TO_CM), (int)(OFFSET+colIndex*PIX_TO_CM), (int)PIX_TO_CM, (int)PIX_TO_CM);
+        fill(255,255,255);
+        textSize(27);
+        text("0",(int)(OFFSET+rowIndex*PIX_TO_CM+PIX_TO_CM/4),(int)(OFFSET+colIndex*PIX_TO_CM+3*PIX_TO_CM/4));
         break;
       case LIGHT: //If it is a light
        // System.out.println("FOUND LIGHT");
