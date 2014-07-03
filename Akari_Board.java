@@ -24,6 +24,11 @@ public class Akari_Board extends GameBoard {
     super(fileName);
     lit = new boolean[board.length][board[0].length];
   }
+
+  public Akari_Board (Akari_Board copy) {
+    super(copy.row,copy.col);
+    this.board = copy.board();
+  }
   
   public int[][] getBoard() {
     return board;
@@ -123,7 +128,25 @@ public class Akari_Board extends GameBoard {
       lit[rowNum][index] = true;
     }
   }
+
+  private static void solvePuzzle(Akari_Board puzz) {
+	boolean edited = true;
+	do{
+	 for (int rowCheck = 0; rowCheck < puzz.rowSize; rowCheck++) {
+		for (int colCheck = 0; colCheck < puzzle.colSize; colCheck++) {
+
+
+		}
+	}
+
+
+        } while (edited);
+
+
+}		
 }
+
+	
   
   
   
