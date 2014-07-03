@@ -26,7 +26,7 @@ public class GameBoard {
   public int rowSize = 0;
   public int colSize = 0;
   private String puzName = "";
-  int[][] board;
+  public int[][] board;
   
   
   
@@ -35,6 +35,19 @@ public class GameBoard {
     this.rowSize = row;
     this.colSize = col;
     board = new int[rowSize][colSize];
+  }
+  
+  public GameBoard (GameBoard toCopy) {
+    this.rowSize = toCopy.rowSize;
+    this.colSize = toCopy.colSize;
+    this.board = new int[rowSize][colSize];
+    for (int i = 0; i < this.board.length; i++) {
+      for (int t = 0; t < board[i].length; t++) {
+       this.board[i][t] = toCopy.board[i][t]; 
+      }
+    }
+    this.puzName = "Copy of " + toCopy.puzName;
+    
   }
   
   public GameBoard (String fileName) {
@@ -67,16 +80,21 @@ public class GameBoard {
       this.colSize = col.intValue();
       Byte dat = dis.readByte();
       int numData = dat.intValue();
+      System.out.println(numData);
       board = new int[rowSize][colSize];
       for (int counter = 0; counter < numData; counter++) {
+        System.out.println("COUNTER: " + counter);
         Byte datRow = dis.readByte();
         Byte datCol = dis.readByte();
         int dataRow = datRow.intValue();
         int dataCol = datCol.intValue();
-        int data = dis.readInt();
+        Byte date= dis.readByte();
+        int data = date.intValue();
+        System.out.println("["+dataRow+"],["+dataCol+"]="+data);
         board[dataRow][dataCol] = data;
       }
     } catch (IOException e) {
+      e.printStackTrace();
       System.out.println("Error occured while reading in the Puzzle"); 
       try {
         dis.close();
