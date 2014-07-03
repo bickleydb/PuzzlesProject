@@ -26,7 +26,7 @@ public class GameBoard {
   public int rowSize = 0;
   public int colSize = 0;
   private String puzName = "";
-  int[][] board;
+  public int[][] board;
   
   
   
