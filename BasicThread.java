@@ -1,5 +1,15 @@
+/*
+BasicThread class that goes through the Puzzle and determines if any grid squares can be filled in immeadately, without any advanced
+algorithms or fancy logic moves. This is a seperate thread, partially to keep some of the code in it's own class (it was getting reeeeally long)
+and then hopefully be able to continually work on finding guarenteed correct answers while other stuff works to solve the puzzle.
+
+
+*/
+
 public class BasicThread extends Thread {
 
+
+  //Akari constants for important grid values.
   final int LIGHT = 10;
   final int IGNORE_LIGHT = 11;
   final int TRY_START = -1;
@@ -12,8 +22,8 @@ public class BasicThread extends Thread {
   final int EMPTY = 0;
   final int OVERFLOW = 7;
 
-
   Akari_Board toSolve;
+
   public BasicThread (Akari_Board toSolve) {
     super("BasicThread");
     this.toSolve = toSolve;
@@ -24,20 +34,22 @@ public class BasicThread extends Thread {
 
   public void run() {
     try {
-      checkTop();
-      checkLeft();
-      checkRight();
-      checkBottom();
-      checkCorners();
-      checkBody();
+      checkTop(); //Checks the top row of the grid
+      checkLeft(); //Checks the left column of the grid
+      checkRight(); //Checks the right column of the grid
+      checkBottom(); //checks the bottom row of the grid
+      checkCorners(); //Checks the corners of the grid
+      checkBody(); //Checks the meat of the grid
     } 
-    catch (Exception e) {
+    catch (InvalidPuzzleException e) {
+	//If it catches an exception, then the puzzle had a problem
     }
   }
 
   private void fourBody(int i, int t) {
     if ((toSolve.board[i+1][t] < LIGHT && toSolve.board[i+1][t] > EMPTY) || (toSolve.board[i-1][t] < LIGHT && toSolve.board[i-1][t] > EMPTY)  || 
       (toSolve.board[i][t-1] < LIGHT && toSolve.board[i][t-1] > EMPTY)  || (toSolve.board[i][t+1] < LIGHT && toSolve.board[i][t+1] > EMPTY)) {
+        return;
     }
     toSolve.addLight(i-1, t);
     toSolve.addLight(i+1, t);

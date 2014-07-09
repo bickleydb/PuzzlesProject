@@ -18,3 +18,4 @@ in Java proper.
 
 These puzzles are currently all going to be based around a NxM grid of ints, which will correspond to different visuals
 in each GUI. 
+

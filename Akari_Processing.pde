@@ -1,5 +1,4 @@
 import javax.swing.*;
-
 /*
 The Gameboard is set up like Row and Column.
  Row = Y
@@ -10,8 +9,6 @@ The Gameboard is set up like Row and Column.
 //Constants for creating the GameBoard
 final double PIX_TO_CM = 37.7952;
 final int OFFSET = 50;
-boolean loaded = false;
-
 
 //Constants for solving Akari
 final int LIGHT = 10;
@@ -30,12 +27,6 @@ static boolean debug = false;
 
 //Board Specific Variables
 Akari_Board puzzle;
-int row = 20;
-int col = 10;
-int tryNum = -1;
-int[][] board = new int[row][col];
-boolean[][] lit = new boolean[row][col];
-String[] answers = {"load","l","open","o","new","n","create","c"};
 
 private int contains(String[] arr, String stri) {
   int i = 0;
@@ -47,11 +38,18 @@ private int contains(String[] arr, String stri) {
  return -1;
 }
 
-
-
 void setup() {
   String jobToDo = "";
   puzzle = new Akari_Board();
+  String[] answers = new String[8];
+  answers[0] = "load";
+  answers[1] = "l";
+  answers[2] = "open";
+  answers[3] = "o";
+  answers[4] = "new";
+  answers[5] = "n";
+  answers[6] = "create";
+  answers[7] = "c";
   
   do{
     if (debug)
@@ -65,29 +63,21 @@ void setup() {
     if (debug)
       System.out.println("Loading Puzzle");
     loadPuzzle();
-    this.row = puzzle.rowSize;
-    println("ROW: " + this.row);
-    this.col = puzzle.colSize;
-    System.out.println("COL: " + col);
-    this.board=puzzle.getBoard();
-    this.lit = new boolean[row][col];
-    
-    puzzle.setLit(lit);
     this.puzzle.addLitAreas(this.puzzle.getAllTheLights());
   } else {
     if(debug)
     System.out.println("New Puzzle");
   String rowStr = JOptionPane.showInputDialog("How many rows are there?");
   String colStr = JOptionPane.showInputDialog("How many columns are there?");
-  this.row = Integer.parseInt(rowStr);
-  this.col = Integer.parseInt(colStr);
-  puzzle = new Akari_Board(this.row,this.col);
+  int r = Integer.parseInt(rowStr);
+  int c = Integer.parseInt(colStr);
+  puzzle = new Akari_Board(r,c);
   }
   if(debug)
   System.out.println("GUI Setup");
   background(50,0,0); 
   //Makes the window the right size
-  size((int)(2*OFFSET+row*PIX_TO_CM), (int)(2*OFFSET+col*PIX_TO_CM));
+  size((int)(2*OFFSET+puzzle.rowSize*PIX_TO_CM), (int)(2*OFFSET+puzzle.colSize*PIX_TO_CM));
   drawBoard();
   makeButtons();
 }
@@ -104,10 +94,12 @@ void makeButtons() {
 void drawBoard() {
   if (debug)
     System.out.println("Drawing Buttons");
+  int[][]board;
+  boolean[][] lit;
   board = puzzle.getBoard();
   lit = puzzle.getLit();
-  for (int rowIndex = 0; rowIndex  < row; rowIndex++) {
-    for (int colIndex = 0; colIndex < col; colIndex++) {
+  for (int rowIndex = 0; rowIndex  < puzzle.rowSize; rowIndex++) {
+    for (int colIndex = 0; colIndex < puzzle.colSize; colIndex++) {
       switch (board[rowIndex][colIndex]) {
       case EMPTY: //If the grid square does not contain anything
         if (lit[rowIndex][colIndex])
@@ -179,11 +171,12 @@ void savePuzzle() {
 }
 
 void loadPuzzle() {
+  int[][] board;
   System.out.println("asdf");
   String toLoad = JOptionPane.showInputDialog("What file should be read in?");
   this.puzzle.loadBoard("Puzzle11.aki");
-   size((int)(2*OFFSET+row*PIX_TO_CM), (int)(2*OFFSET+col*PIX_TO_CM));
-  this.board = puzzle.getBoard();
+   size((int)(2*OFFSET+puzzle.rowSize*PIX_TO_CM), (int)(2*OFFSET+puzzle.colSize*PIX_TO_CM));
+  board = puzzle.getBoard();
   //this.puzzle.addLitAreas();
  // drawBoard();
   
@@ -195,6 +188,8 @@ void clearPuzzle() {
 
 
 void mousePressed() {
+  int[][] board = puzzle.getBoard();
+  boolean[][] lit = puzzle.getLit();
   if (mouseX < OFFSET || mouseY < OFFSET || mouseX > width-OFFSET || mouseY > height-OFFSET) {
     if (mouseX > 2*width/12 && mouseX < 2*width/12+width/6 && mouseY > 10 && mouseY < 25) {
       savePuzzle();

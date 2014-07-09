@@ -75,11 +75,13 @@ public class Akari_Board extends GameBoard {
 
   public void remove(int row, int col) {
     this.board[row][col] = EMPTY;
+    this.lit[row][col] = false;
     ArrayList<Integer> light = getAllTheLights();
     clearLightsAndLit();
     for (int index = 0; index < light.size()-1; index+=2) {
       addLight(light.get(index), light.get(index+1));
     }
+     addLitAreas(getAllTheLights());
   }
 
   public void addBlock(int row, int col) {
@@ -88,6 +90,7 @@ public class Akari_Board extends GameBoard {
 
   public void addConst (int row, int col, int num) {
     this.board[row][col] = num;
+    this.lit[row][col] = true;
     ArrayList<Integer> light = getAllTheLights();
     clearLightsAndLit();
     for (int index = 0; index < light.size()-1; index+=2) {
@@ -199,14 +202,67 @@ public class Akari_Board extends GameBoard {
   public boolean checkValid() {
     for (int i = 1; i < board.length-1; i++) {
      for (int t = 1; t < board[i].length-1; t++) {
-       
-      
-      
-      
+	if (board[i][t] == FOUR_LIGHT) {
+		if (board[i-1][t] > EMPTY && board[i-1][t] < OVERFLOW)
+			return false;
+		if (board[i+1][t] > EMPTY && board[i-1][t] < OVERFLOW) 
+			return false;
+		if (board[i][t-1] > EMPTY && board[i][t-1] < OVERFLOW) 
+			return false;
+		if (board[i][t+1] >EMPTY && board[i][t-1] < OVERFLOW) 
+			return false;
+	}
+	if (board[i][t] == THREE_LIGHT) {
+		int numConst = 0;
+					
+		if (board[i-1][t] > EMPTY && board[i-1][t] < OVERFLOW)
+			numConst++;
+		if (board[i+1][t] > EMPTY && board[i-1][t] < OVERFLOW)
+			numConst++; 
+		if (board[i][t-1] > EMPTY && board[i][t-1] < OVERFLOW) 
+			numConst++;
+		if (board[i][t+1] >EMPTY && board[i][t-1] < OVERFLOW) 
+			numConst++;
+
+		if (numConst > 3)
+			return false;
+	}
+    	if (board[i][t] == TWO_LIGHT) {
+		int numConst = 0;
+					
+		if (board[i-1][t] > EMPTY && board[i-1][t] < OVERFLOW)
+			numConst++;
+		if (board[i+1][t] > EMPTY && board[i-1][t] < OVERFLOW)
+			numConst++; 
+		if (board[i][t-1] > EMPTY && board[i][t-1] < OVERFLOW) 
+			numConst++;
+		if (board[i][t+1] >EMPTY && board[i][t-1] < OVERFLOW) 
+			numConst++;
+
+		if (numConst > 2)
+			return false;
+		
+	}
+
+	if (board[i][t] == ONE_LIGHT) {
+		int numConst = 0;
+					
+		if (board[i-1][t] > EMPTY && board[i-1][t] < OVERFLOW)
+			numConst++;
+		if (board[i+1][t] > EMPTY && board[i-1][t] < OVERFLOW)
+			numConst++; 
+		if (board[i][t-1] > EMPTY && board[i][t-1] < OVERFLOW) 
+			numConst++;
+		if (board[i][t+1] >EMPTY && board[i][t-1] < OVERFLOW) 
+			numConst++;
+
+		if (numConst > 1)
+			return false;
+		
+      } 
      } 
     }
-    
-    
+    return true;
   }
 
   public String toString() {
@@ -221,6 +277,7 @@ public class Akari_Board extends GameBoard {
   }
 
   private boolean verifiedSolved() {
+    System.out.println("Valid: " + this.checkValid());
     for (int i = 0; i < lit.length; i++) {
       for (int t = 0; t < lit[0].length; t++) {
         if (lit[i][t] == false && board[i][t] == EMPTY)
